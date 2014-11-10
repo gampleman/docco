@@ -144,6 +144,7 @@
     html = config.template({
       sources: config.sources,
       css: path.basename(config.css),
+      language: getLanguage(source, config),
       title: title,
       hasTitle: hasTitle,
       sections: sections,
