@@ -182,7 +182,10 @@ if not specified.
       }
 
       for section, i in sections
-        code = highlightjs.highlight(language.name, section.codeText).value
+        if highlightjs.getLanguage(language.name)
+          code = highlightjs.highlight(language.name, section.codeText).value
+        else
+          code = section.codeText
         code = code.replace(/\s+$/, '')
         section.codeHtml = "<div class='highlight'><pre>#{code}</pre></div>"
         section.docsHtml = marked(section.docsText)
