@@ -169,6 +169,9 @@
     config = _.extend({}, defaults, _.pick.apply(_, [options].concat(__slice.call(_.keys(defaults)))));
     config.languages = buildMatchers(config.languages);
     if (options.template) {
+      if (!options.css) {
+        console.warn("docco: no stylesheet file specified");
+      }
       config.layout = null;
     } else {
       dir = config.layout = path.join(__dirname, 'resources', config.layout);
@@ -220,9 +223,9 @@
   languages = buildMatchers(languages);
 
   getLanguage = function(source, config) {
-    var codeExt, codeLang, ext, lang;
+    var codeExt, codeLang, ext, lang, _ref;
     ext = config.extension || path.extname(source) || path.basename(source);
-    lang = config.languages[ext] || languages[ext];
+    lang = ((_ref = config.languages) != null ? _ref[ext] : void 0) || languages[ext];
     if (lang && lang.name === 'markdown') {
       codeExt = path.extname(path.basename(source, ext));
       if (codeExt && (codeLang = languages[codeExt])) {
