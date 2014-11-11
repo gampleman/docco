@@ -55,7 +55,7 @@
   };
 
   parse = function(source, code, config) {
-    var codeText, docsText, hasCode, i, isText, lang, line, lines, match, maybeCode, save, sections, _i, _j, _len, _len1;
+    var codeLineNumber, codeText, docsText, hasCode, i, index, isText, lang, line, lines, match, maybeCode, save, sections, _i, _j, _len, _len1;
     if (config == null) {
       config = {};
     }
@@ -63,10 +63,12 @@
     sections = [];
     lang = getLanguage(source, config);
     hasCode = docsText = codeText = '';
+    codeLineNumber = 0;
     save = function() {
       sections.push({
         docsText: docsText,
-        codeText: codeText
+        codeText: codeText,
+        codeLineNumber: codeLineNumber
       });
       return hasCode = docsText = codeText = '';
     };
@@ -77,8 +79,8 @@
         lines[i] = maybeCode && (match = /^([ ]{4}|[ ]{0,3}\t)/.exec(line)) ? (isText = false, line.slice(match[0].length)) : (maybeCode = /^\s*$/.test(line)) ? isText ? lang.symbol : '' : (isText = true, lang.symbol + ' ' + line);
       }
     }
-    for (_j = 0, _len1 = lines.length; _j < _len1; _j++) {
-      line = lines[_j];
+    for (index = _j = 0, _len1 = lines.length; _j < _len1; index = ++_j) {
+      line = lines[index];
       if (line.match(lang.commentMatcher) && !line.match(lang.commentFilter)) {
         if (hasCode) {
           save();
@@ -89,6 +91,7 @@
         }
       } else {
         hasCode = true;
+        codeLineNumber += 1;
         codeText += line + '\n';
       }
     }

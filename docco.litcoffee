@@ -116,9 +116,10 @@ individual **section** for it. Each section is an object with `docsText` and
       sections = []
       lang     = getLanguage source, config
       hasCode  = docsText = codeText = ''
+      codeLineNumber = 0
 
       save = ->
-        sections.push {docsText, codeText}
+        sections.push {docsText, codeText, codeLineNumber}
         hasCode = docsText = codeText = ''
 
 Our quick-and-dirty implementation of the literate programming style. Simply
@@ -137,13 +138,14 @@ normal below.
             isText = yes
             lang.symbol + ' ' + line
 
-      for line in lines
+      for line, index in lines
         if line.match(lang.commentMatcher) and not line.match(lang.commentFilter)
           save() if hasCode
           docsText += (line = line.replace(lang.commentMatcher, '')) + '\n'
           save() if /^(---+|===+)$/.test line
         else
           hasCode = yes
+          codeLineNumber += 1
           codeText += line + '\n'
       save()
 
